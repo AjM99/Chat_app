@@ -20,10 +20,13 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Icon(
-              FontAwesomeIcons.comments,
-              size: 100,
-              color: Colors.blueGrey,
+            Hero(
+              tag: "logo",
+              child: Icon(
+                FontAwesomeIcons.comments,
+                size: 100,
+                color: Colors.blueGrey,
+              ),
             ),
             SizedBox(height: 48.0),
             MyTextField(
