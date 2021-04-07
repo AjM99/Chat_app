@@ -10,6 +10,9 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  String email;
+  String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +36,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               icon: FontAwesomeIcons.envelope,
               string: "Enter your mail",
               dotDotText: false,
+              myOnChanged: (value) {
+                email = value;
+              },
             ),
             SizedBox(height: 8.0),
             MyTextField(
               icon: FontAwesomeIcons.unlockAlt,
               string: "Enter your password",
               dotDotText: true,
+              myOnChanged: (value) {
+                password = value;
+              },
             ),
             SizedBox(height: 24.0),
             MyButton(
               colour: Colors.blueAccent,
               string: "Register",
+              myOnPressed: () {
+                print(email);
+                print(password);
+              },
             ),
           ],
         ),
