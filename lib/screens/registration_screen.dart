@@ -1,6 +1,8 @@
 import 'package:chat_app/refactor.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'chat_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static String id = "registration_screen";
@@ -10,6 +12,7 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
   String email;
   String password;
 
@@ -51,13 +54,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
             SizedBox(height: 24.0),
             MyButton(
-              colour: Colors.blueAccent,
-              string: "Register",
-              myOnPressed: () {
-                print(email);
-                print(password);
-              },
-            ),
+                colour: Colors.blueAccent,
+                string: "Register",
+                myOnPressed: () async {
+                  print(email);
+                  print(password);
+                  try {
+                    final newUser = await _auth.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    if (newUser != null) {
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
+                }),
           ],
         ),
       ),
