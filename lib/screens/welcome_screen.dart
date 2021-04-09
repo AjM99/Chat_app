@@ -115,7 +115,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w900,
-                      color: Colors.blueGrey[800],
+                      color: Colors.blueGrey,
                     ),
                     child: AnimatedTextKit(
                       //repeatForever: true,
