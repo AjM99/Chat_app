@@ -22,7 +22,7 @@ class _ChatScreenState extends State<ChatScreen> {
     getCurrentUser();
   }
 
-  void getCurrentUser() async {
+  void getCurrentUser() {
     try {
       final user = _auth.currentUser;
       if (user != null) {
@@ -41,10 +41,10 @@ class _ChatScreenState extends State<ChatScreen> {
   //   }
   // }
 
-  void displayStreamMessages() async {
-    await for (var i in _fireStore.collection('messages').snap[]shots()) {
-      for (var j in i.docs) {
-        print(j.data());
+  void messageStream() async {
+    await for (var snapshot in _fireStore.collection('messages').snapshots()) {
+      for (var message in snapshot.docs) {
+        print(message.data());
       }
     }
   }
@@ -58,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                displayStreamMessages();
+                messageStream();
                 // _auth.signOut();
                 // Navigator.pop(context);
               }),
@@ -71,6 +71,40 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _fireStore.collection('messages').snapshots(),
+              builder: (context, snapshot) {
+                List<Text> messageWidgets = [];
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlueAccent,
+                    ),
+                  );
+                }
+                final messages = snapshot.data.docs;
+
+                for (var message in messages) {
+                  final messageText = message.data()['text'];
+                  final messageSender = message.data()['sender'];
+
+                  final messageWidget = Text(
+                    '$messageText from $messageSender',
+                    style: TextStyle(
+                      fontSize: 40,
+                    ),
+                  );
+                  messageWidgets.add(messageWidget);
+                }
+
+                return Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    children: messageWidgets,
+                  ),
+                );
+              },
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -103,5 +137,12 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
+  }
+}
+
+class MessageBox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
