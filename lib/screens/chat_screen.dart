@@ -11,6 +11,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  //the controller is to clear the text after send button is pressed
+  final myMessageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final _fireStore = FirebaseFirestore.instance;
   User loggedInUser;
@@ -71,10 +73,11 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            //this is for displaying the data/messages form firebase  to my app
             StreamBuilder<QuerySnapshot>(
               stream: _fireStore.collection('messages').snapshots(),
               builder: (context, snapshot) {
-                List<Text> messageWidgets = [];
+                List<MyMessageBox> messageWidgets = [];
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(
@@ -88,13 +91,11 @@ class _ChatScreenState extends State<ChatScreen> {
                   final messageText = message.data()['text'];
                   final messageSender = message.data()['sender'];
 
-                  final messageWidget = Text(
-                    '$messageText from $messageSender',
-                    style: TextStyle(
-                      fontSize: 40,
-                    ),
+                  final myMessageBox = MyMessageBox(
+                    sender: messageSender,
+                    text: messageText,
                   );
-                  messageWidgets.add(messageWidget);
+                  messageWidgets.add(myMessageBox);
                 }
 
                 return Expanded(
@@ -112,6 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: myMessageTextController,
                       onChanged: (value) {
                         message = value;
                       },
@@ -124,6 +126,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         'text': message,
                         'sender': loggedInUser.email,
                       });
+                      myMessageTextController.clear();
                     },
                     child: Text(
                       'Send',
@@ -140,9 +143,35 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
-class MessageBox extends StatelessWidget {
+//this is to design the textBox/bubble/cloud
+class MyMessageBox extends StatelessWidget {
+  MyMessageBox({this.sender, this.text});
+
+  final String sender;
+  final String text;
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("$sender", style: TextStyle(fontSize: 13)),
+          Material(
+            elevation: 5,
+            borderRadius: BorderRadius.circular(35),
+            color: Colors.lightBlueAccent,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                '$text',
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
