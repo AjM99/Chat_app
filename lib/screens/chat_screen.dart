@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+User loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   static String id = "chat_screen";
@@ -15,7 +18,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final myMessageTextController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final _fireStore = FirebaseFirestore.instance;
-  User loggedInUser;
+
   String message;
 
   @override
@@ -61,8 +64,8 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.close),
               onPressed: () {
                 messageStream();
-                // _auth.signOut();
-                // Navigator.pop(context);
+                _auth.signOut();
+                Navigator.pop(context);
               }),
         ],
         title: Text('Chat'),
@@ -85,21 +88,27 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   );
                 }
-                final messages = snapshot.data.docs;
+                // reverse is imp,it makes the new text come at bottom just like all chat app
+                final messages = snapshot.data.docs.reversed;
 
                 for (var message in messages) {
                   final messageText = message.data()['text'];
                   final messageSender = message.data()['sender'];
+                  //this currentUser was created to split the conversation between 2 ppl
+                  final currentUser = loggedInUser.email;
 
                   final myMessageBox = MyMessageBox(
                     sender: messageSender,
                     text: messageText,
+                    isCurrentUser: currentUser == messageSender,
                   );
                   messageWidgets.add(myMessageBox);
                 }
 
                 return Expanded(
                   child: ListView(
+                    //reverse is very imp, it makes the text appear from bottom,just like all chat app
+                    reverse: true,
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     children: messageWidgets,
                   ),
@@ -145,23 +154,33 @@ class _ChatScreenState extends State<ChatScreen> {
 
 //this is to design the textBox/bubble/cloud
 class MyMessageBox extends StatelessWidget {
-  MyMessageBox({this.sender, this.text});
+  MyMessageBox({this.sender, this.text, this.isCurrentUser});
 
   final String sender;
   final String text;
+  final bool isCurrentUser;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(10.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Text("$sender", style: TextStyle(fontSize: 13)),
           Material(
             elevation: 5,
-            borderRadius: BorderRadius.circular(35),
-            color: Colors.lightBlueAccent,
+            borderRadius: isCurrentUser
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(35),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(35))
+                : BorderRadius.only(
+                    topRight: Radius.circular(35),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(35)),
+            color: isCurrentUser ? Colors.lightBlueAccent : Colors.blueAccent,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Text(
