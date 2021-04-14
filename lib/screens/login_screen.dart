@@ -31,7 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              //flexible makes it sync with the screen
               Flexible(
+                //hero is animation style
                 child: Hero(
                   tag: "logo",
                   child: Icon(

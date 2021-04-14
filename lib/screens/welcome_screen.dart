@@ -119,7 +119,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     ),
                     child: AnimatedTextKit(
                       //repeatForever: true,
-                      totalRepeatCount: 10,
+                      totalRepeatCount:50,
                       animatedTexts: [
                         RotateAnimatedText("not a choice"),
                         RotateAnimatedText("a right"),
