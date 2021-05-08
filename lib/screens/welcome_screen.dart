@@ -66,7 +66,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Hero(
-                    tag: "logo",
+                    tag: "  logo",
                     child: Icon(
                       FontAwesomeIcons.comments,
                       size: myAnimation.value * 100,
@@ -119,7 +119,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     ),
                     child: AnimatedTextKit(
                       //repeatForever: true,
-                      totalRepeatCount:50,
+                      totalRepeatCount: 50,
                       animatedTexts: [
                         RotateAnimatedText("not a choice"),
                         RotateAnimatedText("a right"),

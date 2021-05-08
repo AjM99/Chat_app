@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 48.0),
               MyTextField(
                 icon: FontAwesomeIcons.envelope,
-                string: "  Enter your mail",
+                string: "Enter your mail",
                 dotDotText: false,
                 myOnChanged: (value) {
                   email = value;
