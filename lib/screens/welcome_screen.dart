@@ -66,7 +66,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Hero(
-                    tag: "  logo",
+                    tag: "   logo",
                     child: Icon(
                       FontAwesomeIcons.comments,
                       size: myAnimation.value * 100,
